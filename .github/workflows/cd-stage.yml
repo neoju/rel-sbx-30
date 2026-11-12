@@ -1,0 +1,40 @@
+name: CD-STAGE
+
+on:
+  push:
+    branches: [release]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test
+        run: |
+          sleep 10
+          if [ -f FAIL ]; then
+            echo "FAIL file present"
+            exit 1
+          fi
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+        run: sleep 15
+
+  deploy-stage:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: stage
+    steps:
+      - name: Deploy (fake)
+        run: sleep 15
+
+  sync-gitops:
+    needs: deploy-stage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync gitops (fake)
+        run: sleep 5
